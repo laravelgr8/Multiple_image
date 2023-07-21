@@ -2,31 +2,32 @@ latest
 public function editSaveSection(Request $request,$id){
 
     	$data=[];
-    	foreach($request->file('certificate_logo') as $key => $certificate_logo){
-    		$file=$request->file('certificate_logo')[$key];
-            	$certificate_logo=time() . '-' . $file->getClientOriginalName();
-            	$file->move(public_path() . '/web_story/', $certificate_logo);
-            	$data['certificate_logo']=$certificate_logo;
-    	}
-
-    	foreach($request->file('certificate_pic') as $key => $certificate_pic){
-    		$file=$request->file('certificate_pic')[$key];
-            	$certificate_pic=time() . '-' . $file->getClientOriginalName();
-            	$file->move(public_path() . '/web_story/', $certificate_pic);
-            	$data['certificate_pic']=$certificate_pic;
-    	}
-
-    	
-
+    	$certificate_logo=[];
+    	$count=0;
     	if(!empty($request->input('certificate_title'))){
     		$certificate_title=$request->input('certificate_title');
     		foreach($certificate_title as $key => $value){
+
+
+    			$file=$request->file('certificate_logo')[$key];
+	            $certificate_logo=time() . '-' . $file->getClientOriginalName();
+	            $file->move(public_path() . '/web_story/', $certificate_logo);
+	            $data['certificate_logo']=$certificate_logo;
+
+	            $file=$request->file('certificate_pic')[$key];
+	            $certificate_pic=time() . '-' . $file->getClientOriginalName();
+	            $file->move(public_path() . '/web_story/', $certificate_pic);
+	            $data['certificate_pic']=$certificate_pic;
+
+
+
 	            $data['master_course_id']=$id;
 	            $data['certificate_title']=$request->input('certificate_title')[$key];
 	            $data['certificate_content']=$request->input('certificate_content')[$key];
 	            $sql2=DB::table('master_certificate')->insert($data);
     		}
     	}
+    	return response()->json(['status'=>$status,'msg'=>"submitted successfully"],200);
     	
 
     }
